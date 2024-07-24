@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media Viewer</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="index.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Welcome to Media Viewer</h1>
+    <form id="search-form">
+      <input type="text" id="search-input" placeholder="Search for media...">
+      <button type="submit">Search</button>
+    </form>
+  </header>
+  <main>
+    <div id="random-thumbnails">
+      <!-- Random thumbnails will be inserted here -->
+    </div>
+    <button id="random-media">View Random Media</button>
+  </main>
+  <footer>
+    <h3>Sponsor Video</h3>
+    <iframe
+      width="560"
+      height="315"
+      src="https://www.youtube.com/embed/ov0_ehE5t2A?autoplay=1&mute=1&controls=0"
+      frameborder="0"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Viewer</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div style="text-align: center; margin: auto;">
+    <div>
+      <h1>Video Viewer:</h1>
+      <strong id="video-title"></strong>
+    </div>
+    <video id="video-player" controls style="width: 100%; max-width: 600px; margin: 20px 0;">
+      Your browser does not support the video tag.
+    </video>
+    <p>
+      By: <span id="video-nickname"></span> ---
+      Views: <span id="video-views"></span> ---
+      <button id="like-btn" style="width: 32px; background: green;">↑</button> <span id="video-likes"></span> ::
+      <span id="video-dislikes"></span> <button id="dislike-btn" style="width: 32px; background: red;">↓</button>
+    </p>
+    <div>
+      Tags: <span id="video-tags"></span>
+    </div>
+    <div style="margin: 20px; padding: 50px;">
+      Advertisement Space
+      <div>
+        <iframe width="95%" src="https://www.youtube.com/embed/ov0_ehE5t2A?autoplay=1&mute=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Sponsor Video"></iframe>
+      </div>
+    </div>
+    <div id="comments-section">
+      <!-- Comments will be loaded here -->
+    </div>
+    <div>
+      <button id="back-btn" style="width: 100px;">Back</button>
+      <button id="search-btn" style="margin-left: 20px; width: 100px; background: #FF3333;">Search</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const ws = new WebSocket('ws://localhost:5000');
+      const id = '<%= id %>';
+
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ type: 'fetchVideo', id }));
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'video') {
+          const videoData = data.data;
+          document.getElementById('video-title').textContent = videoData.name;
+          document.getElementById('video-nickname').textContent = videoData.nickname;
+          document.getElementById('video-views').textContent = videoData.views;
+          document.getElementById('video-likes').textContent = videoData.likes;
+          document.getElementById('video-dislikes').textContent = videoData.dislikes;
+          document.getElementById('video-tags').innerHTML = JSON.parse(videoData.tags).map(tag => `<a href="/search-results?search=${tag}">${tag}</a>`).join('; ');
+
+          const videoPlayer = document.getElementById('video-player');
+          videoPlayer.src = videoData.url;
+          videoPlayer.load();
+
+          if (!viewUpdated) {
+            ws.send(JSON.stringify({ type: 'updateViews', id }));
+            viewUpdated = true;
+          }
+        }
+      };
+
+      document.getElementById('like-btn').addEventListener('click', () => {
+        ws.send(JSON.stringify({ type: 'updateLikes', id }));
+      });
+
+      document.getElementById('dislike-btn').addEventListener('click', () => {
+        ws.send(JSON.stringify({ type: 'updateDislikes', id }));
+      });
+
+      document.getElementById('back-btn').addEventListener('click', () => {
+        window.history.back();
+      });
+
+      document.getElementById('search-btn').addEventListener('click', () => {
+        window.location.href = '/';
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div style="text-align: center;">
+    <h1>Search Results:</h1>
+    <h3>Search Term: "<%= searchTerm %>"</h3>
+    <div id="results-container" style="height: 512px; overflow-y: scroll; display: grid; gap: 10px; border: 3px solid; margin: auto; justify-content: center;"></div>
+    <div style="margin: 20px;">
+      <h4>Search for New Image?</h4>
+      <button id="random-btn" style="margin-right: 20px; width: 100px; background: purple;">Random</button>
+      <button id="back-btn" style="width: 100px;">Back</button>
+      <button id="search-btn" style="margin-left: 20px; width: 100px; background: #FF3333;">Search</button>
+    </div>
+    <div>
+      Advertisement Space
+      <br>
+      <iframe width="95%" src="https://www.youtube.com/embed/ov0_ehE5t2A?autoplay=1&mute=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Sponsor Video"></iframe>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const ws = new WebSocket('ws://localhost:5000');
+
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ type: 'fetchThumbnails' }));
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'thumbnails') {
+          const searchTerm = '<%= searchTerm %>';
+          const filteredImages = data.data.filter(image => image.tags.includes(searchTerm.toLowerCase()) || JSON.stringify(image.tags).includes(searchTerm.toLowerCase()) || image.name.toLowerCase().includes(searchTerm.toLowerCase()));
+          const resultsContainer = document.getElementById('results-container');
+          if (filteredImages.length > 0) {
+            localStorage.setItem('imagesLength', filteredImages.length);
+            resultsContainer.innerHTML = '';
+            filteredImages.forEach(image => {
+              const imgElement = document.createElement('img');
+              imgElement.src = image.url;
+              imgElement.alt = image.name;
+              imgElement.style.width = '150px';
+              imgElement.style.filter = 'blur(5px)';
+              imgElement.style.margin = 'auto';
+              imgElement.style.padding = '5px';
+              imgElement.style.cursor = 'pointer';
+              imgElement.addEventListener('click', () => {
+                window.location.href = `/image-viewer?id=${image.id}`;
+              });
+              resultsContainer.appendChild(imgElement);
+            });
+          } else {
+            resultsContainer.innerHTML = '<div style="height: 400px; margin: auto; max-width: 600px; display: flex; background: #FFEEEE;"><h2 style="margin: auto;">No images found</h2></div>';
+          }
+        }
+      };
+
+      document.getElementById('random-btn').addEventListener('click', () => {
+        const imagesLength = localStorage.getItem('imagesLength');
+        const randomId = Math.floor(Math.random() * imagesLength) + 1;
+        window.location.href = `/image-viewer?id=${randomId}`;
+      });
+
+      document.getElementById('back-btn').addEventListener('click', () => {
+        window.history.back();
+      });
+
+      document.getElementById('search-btn').addEventListener('click', () => {
+        window.location.href = '/';
+      });
+    });
+  </script>
+</body>
+</html>

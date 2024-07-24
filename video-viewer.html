@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Viewer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div style="text-align: center; margin: auto;">
+    <div>
+      <h1>Video Viewer:</h1>
+      <strong id="video-title"></strong>
+    </div>
+    <video id="video-player" controls style="width: 80%; height: auto;"></video>
+    <p>By: <span id="video-nickname"></span> --- Views: <span id="view-count"></span> --- 
+        <button id="like-button" style="width: 26px;height: 26px;background: green;color: white;font-size: 18px;border-radius: 60px;padding: 3px;">↑</button>
+        <span id="like-count"></span> :: <span id="dislike-count"></span> 
+        <button id="dislike-button" style="width: 26px;height: 26px;background: green;color: white;font-size: 18px;border-radius: 60px; background: red;padding: 3px;">↓</button>
+       </p>
+    <div>
+      Tags: <span id="video-tags"></span>
+    </div>
+    <div style="margin: 20px; padding: 50px;">
+      <h3>Sponsor Video</h3>
+      <iframe
+        width="95%"
+        src="https://www.youtube.com/embed/ov0_ehE5t2A?autoplay=1&mute=1"
+        frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        title="Sponsor Video"
+      ></iframe>
+    </div>
+    <div id="comments-section">
+        <!-- Comments will be loaded here -->
+        <div class="comments-section">
+          <form id="comment-form">
+            <h2>Comments</h2>
+            <div>
+              <input
+              type="text"
+              id="nickname"
+              placeholder="Enter your nickname"
+              required
+            />
+              <button type="submit">Submit</button>
+            </div>
+            
+            <textarea
+              id="comment"
+              placeholder="Leave a comment"
+              required
+            ></textarea>
+            <br>
+            
+          </form>
+          <div class="comments-list" id="comments-list" style="overflow-y: scroll;"></div>
+        </div>
+      
+        <script src="comments.js"></script>
+      </div>
+    <div>
+      <h4>Download HD Video</h4>
+      <button id="download-button" style="margin-right: 20px; width: 100px; border-radius: 5px; background: purple; padding: 10px; color: white; text-decoration: none;">Download</button>
+      <button id="back-button" style="width: 100px; background: rgb(1, 83, 97);">Back</button>
+      <button id="search-button" style="margin-left: 20px; width: 100px; background: #FF3333;">Search</button>
+    </div>
+  </div>
+
+  <div class="modal" id="download-modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Download will begin in <span id="countdown"></span> seconds</h2>
+      <iframe
+        id="youtube-player"
+        width="90%"
+        height="270"
+        src="https://www.youtube.com/embed/_vhf0RZg0fg?enablejsapi=1&autoplay=1&mute=1&controls=0"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+        title="Sponsor Video"
+      ></iframe>
+      <div>
+        <button id="random-button" style="margin-right: 20px; width: 100px; background: purple;">Random</button>
+        <button id="modal-back-button" style="width: 100px;">Back</button>
+        <button id="modal-search-button" style="margin-left: 20px; width: 100px; background: #FF3333;">Search</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="video-viewer.js"></script>
+</body>
+</html>

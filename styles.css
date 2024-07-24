@@ -1,0 +1,138 @@
+.comments-section {
+    width: 80%;
+    margin: 0 auto;
+    padding: 5px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .comments-section h2 {
+    margin-bottom: 20px;
+  }
+  
+  .comments-section input{
+    min-width: 60%; 
+    max-width: 70%;
+    height: 12px;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .comments-section textarea {
+    width: 90%;
+    height: 100px;
+    padding: 10px;
+    
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .comments-section button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .comments-section button:hover {
+    background-color: #0056b3;
+  }
+  
+  .comments-list {
+    max-height: 300px;
+    margin-top: 20px;
+  }
+  
+  .comment {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .comment p {
+    margin: 0;
+  }
+  
+  /* styles.css */
+
+#gallery-container {
+    text-align: center;
+  }
+  
+  #filtered-images-container {
+    height: 512px;
+    overflow-y: scroll;
+    display: grid;
+    gap: 10px;
+    border: 3px solid;
+    margin: auto;
+    justify-content: center;
+  }
+  
+  #no-images-found {
+    display: none;
+    height: 400px;
+    margin: auto;
+    max-width: 600px;
+    background: #FFEEEE;
+  }
+  
+  #no-images-found h2 {
+    margin: auto;
+  }
+  
+  button {
+    width: 100px;
+    margin: 5px;
+    padding: 10px;
+    background-color: purple;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: darkpurple;
+  }
+  
+  iframe {
+    width: 95%;
+    margin-top: 20px;
+  }
+
+  /* styles.css */
+
+.upload-image {
+    text-align: center;
+  }
+  
+  #preview-container {
+    display: none;
+  }
+  
+  button {
+    width: 100px;
+    margin: 5px;
+    padding: 10px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: darkgreen;
+  }
+  
+  iframe {
+    width: 95%;
+    margin-top: 20px;
+  }
+  

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="gallery-container" style="text-align: center; margin: 20px;">
+    <h1>Search Results:</h1>
+    <h3 id="search-term"></h3>
+    <div id="filtered-images-container" style="height: 512px; overflow-y: scroll; display: grid; gap: 10px; border: 3px solid; margin: auto; justify-content: center;"></div>
+    <div id="no-images-found" style="display: none; height: 400px; margin: auto; max-width: 600px; background: #FFEEEE;">
+      <h2 style="margin: auto;">No images found</h2>
+    </div>
+    <div style="margin-top: 20px;">
+      Advertisement Space
+      <br>
+      <iframe width="95%" src="https://www.youtube.com/embed/ov0_ehE5t2A?autoplay=1&mute=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Sponsor Video"></iframe>
+    </div>
+    <div style="margin: 20px;">
+      <h4>Search for New Image?</h4>
+      <button id="random-button" style="margin-right: 20px; width: 100px; background: purple;">Random</button>
+      <button id="back-button" style="width: 100px;background: rgb(1, 83, 97);">Back</button>
+      <button id="search-button" style="margin-left: 20px; width: 100px; background: #FF3333;">Search</button>
+    </div>
+  </div>
+  <script src="search-results.js"></script>
+</body>
+</html>

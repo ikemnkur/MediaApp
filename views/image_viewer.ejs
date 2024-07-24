@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Viewer</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div style="text-align: center; margin: auto;">
+    <div>
+      <h1>Image Viewer:</h1>
+      <strong id="image-title"></strong>
+    </div>
+    <canvas id="image-canvas" style="border: 3px solid; border-radius: 10px; border-color: black; background-color: #FFFFEE; padding: 5px;"></canvas>
+    <p>
+      By: <span id="image-nickname"></span> ---
+      Views: <span id="image-views"></span> ---
+      <button id="like-btn" style="width: 32px; background: green;">↑</button> <span id="image-likes"></span> ::
+      <span id="image-dislikes"></span> <button id="dislike-btn" style="width: 32px; background: red;">↓</button>
+    </p>
+    <div>
+      Tags: <span id="image-tags"></span>
+    </div>
+    <div style="margin: 20px; padding: 50px;">
+      Advertisement Space
+      <div>
+        <iframe width="95%" src="https://www.youtube.com/embed/ov0_ehE5t2A?autoplay=1&mute=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Sponsor Video"></iframe>
+      </div>
+    </div>
+    <div id="comments-section">
+      <!-- Comments will be loaded here -->
+    </div>
+    <div>
+      <h4>Download HD Image</h4>
+      <button id="download-btn" style="margin-right: 20px; width: 100px; border-radius: 5px; background: purple; padding: 10px; color: white; text-decoration: none;">Download</button>
+      <button id="back-btn" style="width: 100px;">Back</button>
+      <button id="search-btn" style="margin-left: 20px; width: 100px; background: #FF3333;">Search</button>
+    </div>
+  </div>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="close-modal">&times;</span>
+      <h2>Download will begin in <span id="countdown"></span> seconds</h2>
+      <iframe id="youtube-player" width="90%" height="270" src="https://www.youtube.com/embed/_vhf0RZg0fg?enablejsapi=1&autoplay=1&mute=1&controls=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen title="Sponsor Video"></iframe>
+      <div>
+        <button id="random-btn" style="margin-right: 20px; width: 100px; background: purple;">Random</button>
+        <button id="modal-back-btn" style="width: 100px;">Back</button>
+        <button id="modal-search-btn" style="margin-left: 20px; width: 100px; background: #FF3333;">Search</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const ws = new WebSocket('ws://localhost:5000');
+      const id = '<%= id %>';
+      const canvas = document.getElementById('image-canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      const canvasPos = { x: 0, y: 0, scale: 1 };
+      let mouseDown = false;
+      const startPos = { x: 0, y: 0 };
+      let lastTouchDist = null;
+      let viewUpdated = false;
+
+      const updateCanvasSize = () => {
+        const size = Math.min(window.innerWidth * 0.8, 512);
+        canvas.width = size;
+        canvas.height = size;
+      };
+
+      const drawImage = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.scale(canvasPos.scale, canvasPos.scale);
+        ctx.translate(-canvas.width / 2, -canvas.height / 2);
+        ctx.drawImage(img, canvasPos.x, canvasPos.y, img.width, img.height);
+        ctx.restore();
+      };
+
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ type: 'fetchImage', id }));
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'image') {
+          const imageData = data.data;
+          document.getElementById('image-title').textContent = imageData.name;
+          document.getElementById('image-nickname').textContent = imageData.nickname;
+          document.getElementById('image-views').textContent = imageData.views;
+          document.getElementById('image-likes').textContent = imageData.likes;
+          document.getElementById('image-dislikes').textContent = imageData.dislikes;
+          document.getElementById('image-tags').innerHTML = JSON.parse(imageData.tags).map(tag => `<a href="/search-results?search=${tag}">${tag}</a>`).join('; ');
+
+          img.src = imageData.url;
+          img.onload = () => {
+            updateCanvasSize();
+            const aspectRatio = img.width / img.height;
+            if (aspectRatio > 1) {
+              img.width = canvas.width;
+              img.height = canvas.width / aspectRatio;
+            } else {
+              img.width = canvas.width * aspectRatio;
+              img.height = canvas.width;
+            }
+            canvasPos.x = (canvas.width - img.width) / 2;
+            canvasPos.y = (canvas.height - img.height) / 2;
+            drawImage();
+          };
+
+          if (!viewUpdated) {
+            ws.send(JSON.stringify({ type: 'updateViews', id }));
+            viewUpdated = true;
+          }
+        }
+      };
+
+      canvas.addEventListener('mousedown', (e) => {
+        mouseDown = true;
+        startPos.x = e.clientX - canvasPos.x;
+        startPos.y = e.clientY - canvasPos.y;
+      });
+
+      window.addEventListener('mouseup', () => {
+        mouseDown = false;
+      });
+
+      canvas.addEventListener('mousemove', (e) => {
+        if (mouseDown) {
+          canvasPos.x = e.clientX - startPos.x;
+          canvasPos.y = e.clientY - startPos.y;
+          drawImage();
+        }
+      });
+
+      canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const zoom = e.deltaY * -0.002;
+        const newScale = canvasPos.scale + zoom;
+        if (newScale > 0.1 && newScale < 10) {
+          const mouseX = e.clientX - canvas.offsetLeft;
+          const mouseY = e.clientY - canvas.offsetTop;
+          canvasPos.x -= (mouseX - canvas.width / 2) * zoom;
+          canvasPos.y -= (mouseY - canvas.height / 2) * zoom;
+          canvasPos.scale = newScale;
+          drawImage();
+        }
+      });
+
+      canvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          mouseDown = true;
+          startPos.x = e.touches[0].clientX - canvasPos.x;
+          startPos.y = e.touches[0].clientY - canvasPos.y;
+        } else if (e.touches.length === 2) {
+          mouseDown = false;
+          lastTouchDist = getTouchDist(e);
+        }
+        e.preventDefault();
+      });
+
+      canvas.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 1 && mouseDown) {
+          canvasPos.x = e.touches[0].clientX - startPos.x;
+          canvasPos.y = e.touches[0].clientY - startPos.y;
+          drawImage();
+        } else if (e.touches.length === 2) {
+          const touchDist = getTouchDist(e);
+          const zoom = (touchDist - lastTouchDist) * 0.005;
+          const newScale = canvasPos.scale + zoom;
+          if (newScale > 0.1 && newScale < 10) {
+            canvasPos.scale = newScale;
+            drawImage();
+          }
+          lastTouchDist = touchDist;
+        }
+        e.preventDefault();
+      });
+
+      canvas.addEventListener('touchend', () => {
+        mouseDown = false;
+        lastTouchDist = null;
+      });
+
+      const getTouchDist = (e) => {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+      };
+
+      window.addEventListener('resize', updateCanvasSize);
+
+      document.getElementById('like-btn').addEventListener('click', () => {
+        ws.send(JSON.stringify({ type: 'updateLikes', id }));
+      });
+
+      document.getElementById('dislike-btn').addEventListener('click', () => {
+        ws.send(JSON.stringify({ type: 'updateDislikes', id }));
+      });
+
+      document.getElementById('download-btn').addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.href = img.src;
+        link.download = '<%= id %>';
+        link.click();
+      });
+
+      document.getElementById('back-btn').addEventListener('click', () => {
+        window.history.back();
+      });
+
+      document.getElementById('search-btn').addEventListener('click', () => {
+        window.location.href = '/';
+      });
+
+      document.getElementById('close-modal').addEventListener('click', () => {
+        document.getElementById('modal').style.display = 'none';
+      });
+
+      document.getElementById('random-btn').addEventListener('click', () => {
+        const imagesLength = localStorage.getItem('imagesLength');
+        const randomId = Math.floor(Math.random() * imagesLength) + 1;
+        window.location.href = `/image-viewer?id=${randomId}`;
+      });
+
+      document.getElementById('modal-back-btn').addEventListener('click', () => {
+        window.history.back();
+      });
+
+      document.getElementById('modal-search-btn').addEventListener('click', () => {
+        window.location.href = '/';
+      });
+
+      // Countdown for modal
+      let countdown = 30;
+      const countdownElement = document.getElementById('countdown');
+      countdownElement.textContent = countdown;
+      const countdownInterval = setInterval(() => {
+        countdown -= 1;
+        countdownElement.textContent = countdown;
+        if (countdown <= 0) {
+          clearInterval(countdownInterval);
+          document.getElementById('modal').style.display = 'none';
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
