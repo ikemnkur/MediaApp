@@ -3,28 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Homepage</title>
-  <link rel="stylesheet" href="/styles.css">
+  <title>Search for Images</title>
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
-  <h1>Homepage</h1>
   <div>
-    <h2>Search for media</h2>
-    <form action="/search-results" method="get">
-      <input type="text" name="search" placeholder="Enter search term">
-      <button type="submit">Search</button>
-    </form>
+    <meta name="juicyads-site-verification" content="bbe5a33bc5b03f01ab140107439da909"></meta>
+    <div style="margin: auto; text-align: center;">
+      <h1>Search for Images</h1>
+      <div style="align-content: center; margin: auto;">
+        <form id="search-form">
+          <input
+            type="text"
+            id="searchTerm"
+            placeholder="Enter tags..."
+          />
+          <button style="margin-left: 0;" type="submit">Search</button>
+        </form>
+      </div>
+      <br></br>
+      <br></br>
+      <div>
+        <strong>Have your own image to share?</strong>
+      </div>
+      <button style="width: 150px; background: green;" id="upload-button">Upload</button>
+      <br></br>
+      <h3>Random Pics</h3>
+      <p>Click to Reveal</p>
+      <div style="width: 90%; background: #FFDDEE; margin: auto; gap: 10px; border-radius: 5px;" id="random-thumbnails">
+        <!-- Random thumbnails will be inserted here by JavaScript -->
+      </div>
+      <button style="width: 100px; margin-top: 15px; background: purple;" id="random-button">Random</button>
+      <div style="margin: auto; padding: 50px;">
+        <strong style="margin-bottom: 15px;">Advertisement Space</strong>
+        <br></br>
+        <div style="margin: auto; padding: 10px;">
+          <iframe
+            width="95%"
+            height="95%"
+            src="https://www.youtube.com/embed/ov0_ehE5t2A?autoplay=1&mute=1"
+            frameborder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            title="Sponsor Video"
+          ></iframe>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>
-    <h2>Random Preview</h2>
-    <!-- Random preview thumbnails -->
-  </div>
-  <div>
-    <button onclick="location.href='/image-viewer?id=1'">Random Image/Video</button>
-  </div>
-  <div>
-    Advertisement Space
-    <iframe width="95%" src="https://www.youtube.com/embed/ov0_ehE5t2A?autoplay=1&mute=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Sponsor Video"></iframe>
-  </div>
+  <script src="/scripts/index.js"></script>
 </body>
 </html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Image</title>
+  <link rel="stylesheet" href="/styles/upload.css">
+</head>
+<body>
+  <div class="upload-image">
+    <strong>Have your own image to share?</strong>
+    <h1>Upload an Image:</h1>
+    <form id="upload-form">
+      <input type="text" id="name" placeholder="Enter image name" required>
+      <input type="text" id="nickname" placeholder="Enter your nickname" required>
+      <input type="text" id="tags" placeholder="Enter tags (comma separated)" required>
+      <input type="file" id="file" required>
+      <div id="preview-container" style="display: none;">
+        <h2>Image Preview:</h2>
+        <img id="preview" alt="Preview" style="width: 300px; margin: 10px 0;">
+      </div>
+      <button type="submit" id="upload-button" style="background: green;">Upload Image</button>
+      <button type="button" id="back-button">Back</button>
+    </form>
+    <div>
+      <h3>Sponsor Video</h3>
+      <iframe
+        width="95%"
+        src="https://www.youtube.com/embed/ov0_ehE5t2A?autoplay=1&mute=1"
+        frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        title="Sponsor Video"
+      ></iframe>
+    </div>
+  </div>
+  <script src="/scripts/upload.js"></script>
+</body>
+</html>

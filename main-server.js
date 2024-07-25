@@ -1,5 +1,5 @@
-// Main server code (server.js)
 const express = require('express');
+const path = require('path');
 const http = require('http');
 const WebSocket = require('ws');
 const mysql = require('mysql2');
@@ -11,6 +11,11 @@ const port = process.env.PORT || 6000;
 
 app.use(cors());
 app.use(express.json());
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+app.use('/styles', express.static(path.join(__dirname, 'public/styles')));
+app.use('/scripts', express.static(path.join(__dirname, 'public/scripts')));
 
 // MySQL database connection
 const db = mysql.createConnection({
@@ -39,6 +44,11 @@ const rateLimiter = (req, res, next) => {
   lastRequestTimestamps[ip] = now;
   next();
 };
+
+// Render the index page
+app.get('/', (req, res) => {
+  res.render('index');
+});
 
 // WebSocket handling
 wss.on('connection', ws => {
